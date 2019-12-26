@@ -18,6 +18,9 @@ public class Sensor {
     @Column(name = "id")
     private long id;
 
+    @Column(name = "uuid")
+    private String uuid;
+
     @NotNull
     @Column(name = "name")
     private String name;
@@ -46,10 +49,11 @@ public class Sensor {
     public Sensor() {
     }
 
-    public Sensor(@NotNull String name, @NotNull String value, @NotNull Team team) {
+    public Sensor(@NotNull String name, @NotNull String value, @NotNull Team team, String uuid) {
         this.name = name;
         this.value = value;
         this.team = team;
+        this.uuid = uuid;
     }
 
     public long getId() {
@@ -98,5 +102,13 @@ public class Sensor {
 
     public void setTimeUpdated(LocalDateTime timeUpdated) {
         this.timeUpdated = timeUpdated;
+    }
+
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
     }
 }

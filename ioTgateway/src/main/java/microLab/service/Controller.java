@@ -14,7 +14,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestClientException;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static microLab.utils.Constants.teams;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -45,8 +49,12 @@ public class Controller {
         if (teams.contains(name)) {
             Team team = teamRepository.findTeamByName(name)
                     .orElseGet(() -> teamRepository.save(new Team(name)));
-            sensors.forEach(requestedSensor -> sensorRepository.save(new Sensor(requestedSensor.getName(), requestedSensor.getValue(), team)));
-            return new ResponseEntity<>(team, HttpStatus.OK);
+
+            String uuid = UUID.randomUUID().toString();
+
+            //When a team requests to create a sensor with the same name, a new record will be created in DB with a different primary key.
+            sensors.forEach(requestedSensor -> sensorRepository.save(new Sensor(requestedSensor.getName(), requestedSensor.getValue(), team, uuid)));
+            return new ResponseEntity<>("Successfully Received Data from team " + team.getName() + ".", HttpStatus.OK);
         } else {
             return new ResponseEntity<>("Invalid Team Name : " + name, HttpStatus.BAD_REQUEST);
         }
@@ -57,5 +65,35 @@ public class Controller {
         return teamRepository.findTeamByName(name)
                 .map(team -> new ResponseEntity<>(team, HttpStatus.OK))
                 .orElseThrow(() -> new RestClientException("Team " + name + " does not exist."));
+    }
+
+    @GetMapping("/{name}/latest")
+    public ResponseEntity<?> getLatestSensorDataPerTeam(@PathVariable String name) {
+        Optional<Team> optionalTeam = teamRepository.findTeamByName(name);
+        if (optionalTeam.isPresent()) {
+            Team team = optionalTeam.get();
+            //Get the latest received sensor (for the given team)
+            Sensor latestRecordsPerTeam = sensorRepository.findTopByTeamIdOrderByIdDesc(team.getId());
+            return new ResponseEntity<>(latestRecordsPerTeam, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("Team " + name + " does not exist.", HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("/{name}/latestPOSTCall")
+    public ResponseEntity<?> getLatestPOSTCallDataPerTeam(@PathVariable String name) {
+        Optional<Team> optionalTeam = teamRepository.findTeamByName(name);
+        if (optionalTeam.isPresent()) {
+            Team team = optionalTeam.get();
+            //Get the latest received sensor (for the given team)
+            String latestUUID = sensorRepository.findTopByTeamIdOrderByIdDesc(team.getId()).getUuid();
+
+            List<Sensor> latestRecordsPerTeam = team.getSensors().stream()
+                    .filter(sensor -> sensor.getUuid().equals(latestUUID))
+                    .collect(Collectors.toList());
+            return new ResponseEntity<>(latestRecordsPerTeam, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("Team " + name + " does not exist.", HttpStatus.BAD_REQUEST);
+        }
     }
 }
