@@ -2,8 +2,11 @@ package microLab.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -17,9 +20,6 @@ public class Sensor {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private long id;
-
-    @Column(name = "uuid")
-    private String uuid;
 
     @NotNull
     @Column(name = "name")
@@ -38,22 +38,17 @@ public class Sensor {
     @Column(name = "time_received")
     @CreationTimestamp
     @JsonProperty("created_at")
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime timeReceived;
-
-    @Column(name = "time_updated")
-    @UpdateTimestamp
-    @JsonProperty("updated_at")
-    @JsonIgnore
-    private LocalDateTime timeUpdated;
 
     public Sensor() {
     }
 
-    public Sensor(@NotNull String name, @NotNull String value, @NotNull Team team, String uuid) {
+    public Sensor(@NotNull String name, @NotNull String value, @NotNull Team team) {
         this.name = name;
         this.value = value;
         this.team = team;
-        this.uuid = uuid;
     }
 
     public long getId() {
@@ -94,21 +89,5 @@ public class Sensor {
 
     public void setTimeReceived(LocalDateTime timeReceived) {
         this.timeReceived = timeReceived;
-    }
-
-    public LocalDateTime getTimeUpdated() {
-        return timeUpdated;
-    }
-
-    public void setTimeUpdated(LocalDateTime timeUpdated) {
-        this.timeUpdated = timeUpdated;
-    }
-
-    public String getUuid() {
-        return uuid;
-    }
-
-    public void setUuid(String uuid) {
-        this.uuid = uuid;
     }
 }
