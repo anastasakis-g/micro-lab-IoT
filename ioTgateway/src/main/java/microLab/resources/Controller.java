@@ -103,16 +103,21 @@ public class Controller {
 
     @GetMapping
     public List<Team> getAllTeamsWithLatestPostedSensors() {
-//        List<Team> teams = teamRepository.findAll();
-//        List<Team> displayedTeams = new ArrayList<>();
-//        teams.forEach(team -> {
-//            String teamName = team.getName();
-//            List<Sensor> latestSensors = utils.getLatestRecordsPerTeam(team);
-//            Team displayedTeam = new Team();
-//            displayedTeam.setName(teamName);
-//            displayedTeam.setSensors(latestSensors);
-//            displayedTeams.add(displayedTeam);
-//        });
-        return null;
+        List<Team> teams = teamRepository.findAll();
+        return teams.stream().map(team ->
+                {
+                    try {
+                        team.setSensors(utils.getTheLatestPersistedSensorsByTeam(team.getName()));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    return team;
+                }
+        ).collect(Collectors.toList());
+    }
+
+    @GetMapping("/all")
+    public List<Team> getAllTeamsData() {
+        return teamRepository.findAll();
     }
 }

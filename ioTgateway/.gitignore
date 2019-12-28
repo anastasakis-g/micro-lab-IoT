@@ -16,7 +16,7 @@ settings.gradle
 
 buildOutputCleanup.lock
 classAnalysis.bin
-executionHistory
-fileHashes
+executionHistory/
+fileHashes/
 javaComppile.lock
 workspace.xml
