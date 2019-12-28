@@ -13,3 +13,10 @@ out/
 gradlew
 gradlew.bat
 settings.gradle
+
+buildOutputCleanup.lock
+classAnalysis.bin
+executionHistory
+fileHashes
+javaComppile.lock
+workspace.xml
