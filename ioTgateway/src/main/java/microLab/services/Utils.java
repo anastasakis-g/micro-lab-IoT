@@ -14,6 +14,7 @@ import java.util.List;
 
 @Service
 public class Utils {
+
     @Autowired
     private DisplayedTeamRepository displayedTeamRepository;
 

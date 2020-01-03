@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static microLab.utils.Constants.sensorNames;
 import static microLab.utils.Constants.teams;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -58,12 +59,19 @@ public class Controller {
             Team team = teamRepository.findTeamByName(name)
                     .orElseGet(() -> teamRepository.save(new Team(name)));
 
+            List<String> invalidRequestedSensorNames = sensorsDto.stream().filter(s -> !sensorNames.contains(s.getName())).map(SensorDto::getName).collect(Collectors.toList());
+
             List<Sensor> persistedSensors = sensorsDto.stream()
+                    .filter(requestedSensorDto -> sensorNames.contains(requestedSensorDto.getName()))
                     .map(requestedSensorDto -> sensorRepository.save(new Sensor(requestedSensorDto.getName(), requestedSensorDto.getValue(), team)))
                     .collect(Collectors.toList());
 
             Display displayedTeam = new Display(name, utils.toJsonString(persistedSensors));
             displayedTeamRepository.save(displayedTeam);
+
+            if (invalidRequestedSensorNames.size() > 0)
+                return new ResponseEntity<>("Invalid Sensor Name: " + utils.toJsonString(invalidRequestedSensorNames), HttpStatus.BAD_REQUEST);
+
             return new ResponseEntity<>("Successfully Received Data from team " + team.getName() + ".", HttpStatus.OK);
         } else {
             return new ResponseEntity<>("Invalid Team Name : " + name, HttpStatus.BAD_REQUEST);

@@ -62,6 +62,11 @@ public class Constants {
     private static final String C18 = "C18";
     private static final String C19 = "C19";
 
+    private static final String TEMPERATURE = "Temperature";
+    private static final String HUMIDITY = "Humidity";
+    private static final String VOLTAGE = "Voltage";
+    private static final String READY_TO_GO = "Ready";
+
     public static List<String> teams = Arrays.asList(
             A1,
             A2,
@@ -120,5 +125,12 @@ public class Constants {
             C17,
             C18,
             C19
+    );
+
+    public static List<String> sensorNames = Arrays.asList(
+            TEMPERATURE,
+            HUMIDITY,
+            VOLTAGE,
+            READY_TO_GO
     );
 }
