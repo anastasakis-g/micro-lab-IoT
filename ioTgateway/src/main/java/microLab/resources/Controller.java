@@ -72,11 +72,11 @@ public class Controller {
             }
 
             if (invalidRequestedSensorNames.size() > 0)
-                return new ResponseEntity<>("Invalid Sensor Name: " + utils.toJsonString(invalidRequestedSensorNames), HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>("Invalid Sensor Name: " + utils.toJsonString(invalidRequestedSensorNames), HttpStatus.OK);
 
             return new ResponseEntity<>("Successfully Received Data from team " + team.getName() + ".", HttpStatus.OK);
         } else {
-            return new ResponseEntity<>("Invalid Team Name : " + name, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Invalid Team Name : " + name, HttpStatus.OK);
         }
     }
 
