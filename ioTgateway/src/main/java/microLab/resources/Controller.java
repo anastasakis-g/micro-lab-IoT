@@ -66,8 +66,10 @@ public class Controller {
                     .map(requestedSensorDto -> sensorRepository.save(new Sensor(requestedSensorDto.getName(), requestedSensorDto.getValue(), team)))
                     .collect(Collectors.toList());
 
-            Display displayedTeam = new Display(name, utils.toJsonString(persistedSensors));
-            displayedTeamRepository.save(displayedTeam);
+            if (persistedSensors.size() >= 1) {
+                Display displayedTeam = new Display(name, utils.toJsonString(persistedSensors));
+                displayedTeamRepository.save(displayedTeam);
+            }
 
             if (invalidRequestedSensorNames.size() > 0)
                 return new ResponseEntity<>("Invalid Sensor Name: " + utils.toJsonString(invalidRequestedSensorNames), HttpStatus.BAD_REQUEST);
@@ -112,16 +114,22 @@ public class Controller {
     @GetMapping
     public List<Team> getAllTeamsWithLatestPostedSensors() {
         List<Team> teams = teamRepository.findAll();
-        return teams.stream().map(team ->
-                {
-                    try {
-                        team.setSensors(utils.getTheLatestPersistedSensorsByTeam(team.getName()));
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    return team;
-                }
-        ).collect(Collectors.toList());
+        return teams.stream().filter(team -> {
+            int size = 0;
+            try {
+                size = utils.getTheLatestPersistedSensorsByTeam(team.getName()).size();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return size > 0;
+        }).map(team -> {
+            try {
+                team.setSensors(utils.getTheLatestPersistedSensorsByTeam(team.getName()));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return team;
+        }).collect(Collectors.toList());
     }
 
     @GetMapping("/all")
