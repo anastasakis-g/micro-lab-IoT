@@ -1,11 +1,7 @@
-*.war
 
-.gradle/*
-.idea/*
-build/classes/*
-build/generated/*
-build/resources/*
-build/tmp/*
+.gradle/
+.idea/
+/build/
 gradle/
 
 out/
@@ -13,10 +9,3 @@ out/
 gradlew
 gradlew.bat
 settings.gradle
-
-buildOutputCleanup.lock
-classAnalysis.bin
-executionHistory/
-fileHashes/
-javaComppile.lock
-workspace.xml
