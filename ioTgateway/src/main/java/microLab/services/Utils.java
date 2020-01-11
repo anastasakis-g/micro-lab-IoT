@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -34,8 +33,8 @@ public class Utils {
             List<Sensor> sensors = new ObjectMapper().readValue(sensorsAsString, new TypeReference<List<Sensor>>() {
             });
 
-            //Get the latest sensor from list
             Sensor sensor = sensors.get(sensors.size() - 1);
+            /** Display only the persisted sensors in last 10 minutes. */
             if (sensor.getTimeReceived().isAfter(LocalDateTime.now().minusMinutes(10))) {
                 return sensors;
             } else {
@@ -44,7 +43,5 @@ public class Utils {
         } else {
             return Collections.emptyList();
         }
-
-        //TODO filter by timestamp
     }
 }

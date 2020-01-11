@@ -21,12 +21,17 @@ public class Display {
     @Column(name = "sensors")
     private String sensorsAsJSONString;
 
+    @NotNull
+    @Column(name = "is_ready")
+    private boolean teamIsReady;
+
     public Display() {
     }
 
-    public Display(String teamName, String sensors) {
+    public Display(String teamName, String sensors, boolean teamIsReady) {
         this.teamName = teamName;
         this.sensorsAsJSONString = sensors;
+        this.teamIsReady = teamIsReady;
     }
 
     public long getId() {
@@ -51,5 +56,13 @@ public class Display {
 
     public void setSensorsAsJSONString(String sensorsAsJSONString) {
         this.sensorsAsJSONString = sensorsAsJSONString;
+    }
+
+    public boolean isTeamIsReady() {
+        return teamIsReady;
+    }
+
+    public void setTeamIsReady(boolean teamIsReady) {
+        this.teamIsReady = teamIsReady;
     }
 }

@@ -1,8 +1,6 @@
 package microLab.resources;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import microLab.entity.Sensor;
 import microLab.entity.Team;
 import microLab.entity.custom.Display;
@@ -51,15 +49,14 @@ public class Controller {
         return new ResponseEntity<>(registeredTeam, HttpStatus.OK);
     }
 
-    @PostMapping(path = "/{name}/sensors", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> postSensorsToTeam(@PathVariable String name, @RequestBody List<SensorDto> sensorsDto) throws JsonProcessingException {
+    @PostMapping(path = "/{name}/sensors", consumes = APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> postSensorsToTeam(@PathVariable String name, @RequestParam(value = "isReady", defaultValue = "false") boolean teamIsReady, @RequestBody List<SensorDto> sensorsDto) throws JsonProcessingException {
         logger.debug("Requested team " + name + "\n {}", utils.toJsonString(sensorsDto));
 
         if (teams.contains(name)) {
             Team team = teamRepository.findTeamByName(name)
                     .orElseGet(() -> teamRepository.save(new Team(name)));
-
-            List<String> invalidRequestedSensorNames = sensorsDto.stream().filter(s -> !sensorNames.contains(s.getName())).map(SensorDto::getName).collect(Collectors.toList());
+            team.setReady(teamIsReady);
 
             List<Sensor> persistedSensors = sensorsDto.stream()
                     .filter(requestedSensorDto -> sensorNames.contains(requestedSensorDto.getName()))
@@ -67,10 +64,14 @@ public class Controller {
                     .collect(Collectors.toList());
 
             if (persistedSensors.size() >= 1) {
-                Display displayedTeam = new Display(name, utils.toJsonString(persistedSensors));
+                Display displayedTeam = new Display(name, utils.toJsonString(persistedSensors), teamIsReady);
                 displayedTeamRepository.save(displayedTeam);
             }
 
+            List<String> invalidRequestedSensorNames = sensorsDto.stream()
+                    .filter(s -> !sensorNames.contains(s.getName()))
+                    .map(SensorDto::getName)
+                    .collect(Collectors.toList());
             if (invalidRequestedSensorNames.size() > 0)
                 return new ResponseEntity<>("Invalid Sensor Name: " + utils.toJsonString(invalidRequestedSensorNames), HttpStatus.OK);
 
@@ -118,15 +119,13 @@ public class Controller {
             int size = 0;
             try {
                 size = utils.getTheLatestPersistedSensorsByTeam(team.getName()).size();
-            } catch (IOException e) {
-                e.printStackTrace();
+            } catch (IOException ignored) {
             }
             return size > 0;
         }).map(team -> {
             try {
                 team.setSensors(utils.getTheLatestPersistedSensorsByTeam(team.getName()));
-            } catch (IOException e) {
-                e.printStackTrace();
+            } catch (IOException ignored) {
             }
             return team;
         }).collect(Collectors.toList());

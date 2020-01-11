@@ -19,6 +19,10 @@ public class Team {
     @Column(name = "name", unique = true)
     private String name;
 
+    @NotNull
+    @Column(name = "is_ready")
+    private boolean isReady;
+
     @OneToMany(mappedBy = "team", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private List<Sensor> sensors;
@@ -52,5 +56,13 @@ public class Team {
 
     public void setSensors(List<Sensor> sensors) {
         this.sensors = sensors;
+    }
+
+    public boolean isReady() {
+        return isReady;
+    }
+
+    public void setReady(boolean ready) {
+        isReady = ready;
     }
 }
