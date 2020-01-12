@@ -1,7 +1,7 @@
 This service was developed to be deployed on a IoT gateway. 
 Its purpose is to collect sensor data from multiple ESP8266 devices each one corresponding to a different team.
 
-- Each team posts sensor data using the following endpoint:
+Each team posts sensor data using the following endpoint:</br>
 `POST http://localhost:8382/api/students/{team_name}/sensors` </br>
 Optional boolean query param: `isReady` </br>
 Sample Request Payload:
@@ -22,6 +22,5 @@ Sample Request Payload:
 ]
 ```
 Expected Response: </br>
-`HTTP/1.1 200 OK 
-
-OK Team:{team_name}`
+`HTTP/1.1 200 OK` </br>
+`OK Team:{team_name}`
