@@ -1,4 +1,4 @@
-This service was developed to be deployed on a IoT gateway. 
+This service was developed to be deployed on a IoT gateway. </br>
 Its purpose is to collect sensor data from multiple ESP8266 devices each one corresponding to a different team.
 
 Each team posts sensor data using the following endpoint:</br>
@@ -13,11 +13,11 @@ Sample Request Payload:
     },
     {
         "name": "Humidity",
-        "value": "70"
+        "value": 70
     },
     {
         "name": "Voltage",
-        "value": "10"
+        "value": 10
     }
 ]
 ```
