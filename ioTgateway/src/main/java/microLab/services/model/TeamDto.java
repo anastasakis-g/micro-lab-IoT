@@ -6,7 +6,6 @@ public class TeamDto {
     private String name;
     private List<SensorDto> sensors;
 
-
     public String getName() {
         return name;
     }
