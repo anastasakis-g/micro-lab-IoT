@@ -1,8 +1,11 @@
 
 .gradle/
 .idea/
-/build/
 gradle/
+build/classes
+build/generated
+build/resources
+build/tmp
 
 out/
 
