@@ -56,6 +56,8 @@ public class Controller {
         if (teams.contains(name)) {
             Team team = teamRepository.findTeamByName(name)
                     .orElseGet(() -> teamRepository.save(new Team(name)));
+
+            if (sensorsDto.size() == 0) return new ResponseEntity<>("Empty Payload.", HttpStatus.OK);
             team.setReady(teamIsReady);
 
             List<Sensor> persistedSensors = sensorsDto.stream()
@@ -73,11 +75,11 @@ public class Controller {
                     .map(SensorDto::getName)
                     .collect(Collectors.toList());
             if (invalidRequestedSensorNames.size() > 0)
-                return new ResponseEntity<>("Invalid Sensor Name: " + utils.toJsonString(invalidRequestedSensorNames), HttpStatus.OK);
+                return new ResponseEntity<>("Invalid Sensor:" + utils.toJsonString(invalidRequestedSensorNames), HttpStatus.OK);
 
-            return new ResponseEntity<>("Successfully Received Data from team " + team.getName() + ".", HttpStatus.OK);
+            return new ResponseEntity<>("OK Team:" + team.getName(), HttpStatus.OK);
         } else {
-            return new ResponseEntity<>("Invalid Team Name : " + name, HttpStatus.OK);
+            return new ResponseEntity<>("Invalid Team:" + name, HttpStatus.OK);
         }
     }
 
