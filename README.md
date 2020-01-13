@@ -24,13 +24,12 @@ Sample Request Payload:
 Expected Response: </br>
 `HTTP/1.1 200 OK` </br>
 `OK Team:{team_name}` </br>
-If a team doesn't exist and the team name is valid as described in `teams` List at `Constants.java`, a new record will be created in the `team` database table. 
-
-
+</br>
+If a team doesn't exist and the team name is valid as described in `teams` List at `Constants.java`, a new record will be created in the `team` database table.
 </br>
 </br>
 </br>
-If a team posted within the last 10 minutes then only their latest POST call will be displayed: </br>
+If a team posted within the last 10 minutes then only their latest POST call will be displayed:</br>
 `GET http://localhost:8382/api/students` </br>
 
 Sample Response:
